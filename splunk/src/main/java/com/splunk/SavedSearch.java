@@ -114,9 +114,30 @@ public class SavedSearch extends Entity {
      */
     public Job[] history() {
         ResponseMessage response = service.get(actionPath("history"));
-        AtomFeed feed;
+        return parseHistoryResponse(response);
+    }
+    
+    /**
+     * Returns an array of search jobs based on passed search arguments
+     * 
+     * @param args
+     * @return An array of search jobs
+     */
+    public Job[] history(Map<String, Object> args) {
+    	ResponseMessage response = service.get(actionPath("history"), args);
+    	return parseHistoryResponse(response);
+    }
+    
+    /**
+     * Parses response message from history action path
+     * 
+     * @param responseMessage
+     * @return result An array of Job
+     */
+    private Job[] parseHistoryResponse(final ResponseMessage responseMessage) {
+    	AtomFeed feed;
         try {
-            feed = AtomFeed.parseStream(response.getContent());
+            feed = AtomFeed.parseStream(responseMessage.getContent());
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
